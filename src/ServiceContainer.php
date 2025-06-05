@@ -57,7 +57,14 @@ class ServiceContainer implements ContainerInterface
             );
         }
 
-        if (!class_exists($id)) {
+        // This will try to catch any autoloading issues
+        try {
+            $class_exists = class_exists($id);
+        } catch (Throwable) {
+            $class_exists = false;
+        }
+
+        if (!$class_exists) {
             throw new ServiceNotFoundException(
                 "Service '{$id}' could not be resolved: it is neither defined in the container configuration nor does a corresponding class exist. " .
                 "Please check your service configuration and ensure the class '{$id}' exists and is autoloadable."
