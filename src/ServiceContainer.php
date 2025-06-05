@@ -42,7 +42,7 @@ class ServiceContainer implements ContainerInterface
             }
 
             if (is_array($config)) {
-                // Get the listed dependencies from the container.
+                // Array configuration for constructor injection.
                 $args = [];
                 foreach ($config as $key => $dependency) {
                     if (is_callable($dependency)) {
