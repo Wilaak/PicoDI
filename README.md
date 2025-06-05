@@ -2,12 +2,6 @@
 
 A stupidly simple PHP dependency injection container.
 
-### Notable Features: 
-
-- **Autowiring**: Automatically resolves constructor dependencies using type hints.  
-- **PSR-11 Compliant**: Implements the `ContainerInterface` for interoperability.  
-- **Automatic Instantiation**: Automatically instantiates loadable classes without requiring explicit configuration.  
-
 ## Installation  
 
 Install PicoDI using Composer:  
@@ -18,26 +12,23 @@ composer require wilaak/picodi
 
 Requires PHP 8.3 or above
 
+
 ## Table of Contents
 
-1. [Introduction](#introduction)  
-2. [Usage](#usage)  
-    - [Basic Example](#basic-example)  
-    - [Autowiring](#autowiring)  
-    - [Advanced Example](#advanced-example)  
-    - [Configuration Options](#configuration-options)  
-3. [Learn More](#learn-more)  
-4. [Attribution](#attribution)  
+- [Usage examples](#usage-examples)
+    - [Basic Example](#basic-example)
+    - [Autowiring](#autowiring)
+    - [Advanced Example](#advanced-example)
+- [Configuration Options](#configuration-options)
+    - [1. String or `::class` Syntax](#1-string-or-class-syntax)
+    - [2. Closure (Factory Function)](#2-closure-factory-function)
+    - [3. Array (Constructor Injection)](#3-array-constructor-injection)
+- [Learn](#learn)
+- [Attribution](#attribution)
 
-## Introduction
+## Usage examples
 
-PicoDI is a stupidly simple dependency injection container, providing only the bare essentials needed to get started. Dependency injection containers are powerful tools in software development. They help manage and centralize the creation and resolution of dependencies within an application. By using a dependency injection container, you can achieve cleaner, more maintainable code by adhering to the principles of Inversion of Control (IoC) and Dependency Inversion.
-
-
-
-## Usage  
-
-Below are examples and explanations to help you get started with the container.
+Below are some examples to help you get started with the container.
 
 ### Basic Example  
 ```php
@@ -110,50 +101,63 @@ $container = new Wilaak\PicoDI\ServiceContainer($config);
 $databaseService = $container->get(DatabaseService::class);
 ```
 
-### Configuration Options
+## Configuration Options
 
-The configuration array defines how the container resolves dependencies. Each key represents a class or interface, and the value specifies how to resolve it. Here are the supported value types:
+The configuration array specifies how the container resolves dependencies. Each key serves as an identifier, usually the fully qualified class or interface name, while the value defines the resolution strategy. The following value types are supported:
 
-1. **String or `::class` Syntax**:
-   - Defines an alias for the class or interface in the key.
-   - Example:
-     ```php
-     LoggerInterface::class => LoggerService::class,
-     ```
-     This maps the `LoggerInterface` to the `LoggerService` implementation.
+### 1. String or `::class` Syntax (Alias)
 
-2. **Closure (Factory Function)**:
-   - Provides a custom factory function for creating the service.
-   - Example:
-     ```php
-     LoggerService::class => function() {
-         return new LoggerService(
-             path: '/var/log/log.txt',
-             level: 'debug'
-         );
-     },
-     ```
-     This allows for more control over how the object is instantiated.
+Defines an alias for the class or interface specified in the key.
 
-3. **Array (Constructor Injection)**:
-   - Maps constructor parameters by utilizing the aforementioned options.
-   - Example:
-     ```php
-     DatabaseService::class => [
-         'dsn'      => fn() => 'mysql:host=localhost;dbname=mydb;charset=utf8mb4',
-         'username' => fn() => 'dbuser',
-         'password' => fn() => 'secret',
-         'options'  => fn() => [
-             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-         ],
-         'logger' => LoggerService::class,
-     ],
-     ```
-     This enables constructor injection by specifying an alias or factory for each parameter.
+```php
+LoggerInterface::class => LoggerService::class,
+```
+This maps the `LoggerInterface` to the `LoggerService` implementation. Using `::class` is essentially the same as providing a string, but we prefer the `::class` syntax because it is more readable and plays better with autocompletion.
 
-## Learn More  
+Here’s the same example without using the `::class` syntax:
+
+```php
+'LoggerInterface' => 'LoggerService',
+```
+This achieves the same result, but using strings directly can be less readable.
+
+### 2. Closure (Factory Function)
+
+Provides a custom factory function for creating the service. Use a closure to explicitly return the desired value.
+
+```php
+LoggerService::class => function() {
+    return new LoggerService(
+        path: '/var/log/log.txt',
+        level: 'debug'
+    );
+},
+```
+
+### 3. Array (Constructor Injection)
+
+Allows you to define constructor arguments for a class using an associative array. Each key corresponds to the name of a constructor parameter, while the value specifies how it should be resolved. You can also use positional arguments by omitting the keys.
+
+- Use a string or `::class` syntax to alias another implementation that will be resolved from the container.
+- Use a closure to assign a value directly.
+
+```php
+DatabaseService::class => [
+    'dsn'      => fn() => 'mysql:host=localhost;dbname=mydb;charset=utf8mb4',
+    'username' => fn() => 'dbuser',
+    'password' => fn() => 'secret',
+    'options'  => fn() => [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    ],
+    'logger' => LoggerService::class,
+],
+```
+
+## Learn
+
 - [Understanding Dependency Injection](https://php-di.org/doc/understanding-di.html)  
 
 ## Attribution  
+
 Thanks to [Evan Hildreth](https://github.com/oddevan) and his article: [A Stupidly Simple PHP Dependency Injection Container](https://oddevan.com/2023/08/31/a-stupidly-simple.html) for inspiring this project.
