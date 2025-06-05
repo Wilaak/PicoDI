@@ -86,8 +86,9 @@ class ServiceContainer implements ContainerInterface
             $type = $param->getType();
             if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
                 // Handle single class type
-                $depClass = $type->getName();
-                $params[] = $this->get($depClass);
+                $params[] = $this->get(
+                    $type->getName()
+                );
             } elseif ($param->isDefaultValueAvailable()) {
                 // Use default value if available
                 $params[] = $param->getDefaultValue();
