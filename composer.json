@@ -1,0 +1,21 @@
+{
+    "name": "wilaak/picodi",
+    "description": "A stupidly simple PHP dependency injection container.",
+    "type": "library",
+    "license": "WTFPL",
+    "authors": [
+        {
+            "name": "William",
+            "email": "54738571+Wilaak@users.noreply.github.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Wilaak\\PicoDI\\": "src/"
+        }
+    },
+    "require": {
+        "psr/container": "^2.0"
+    }
+}
