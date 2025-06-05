@@ -43,17 +43,23 @@ class ServiceContainer implements ContainerInterface
 
             if (is_array($config)) {
                 // Get the listed dependencies from the container.
-                $args = array_map(
-                    fn($dependency) =>
-                    is_callable($dependency) ?
-                        call_user_func($dependency) :
-                        $this->get($dependency),
-                    $config
-                );
+                $args = [];
+                foreach ($config as $key => $dependency) {
+                    if (is_callable($dependency)) {
+                        $args[$key] = call_user_func($dependency);
+                    } elseif (is_string($dependency)) {
+                        $args[$key] = $this->get($dependency);
+                    } else {
+                        throw new InvalidServiceConfigurationException(
+                            "Invalid service configuration for '{$id}': expected callable or string for a constructor injection dependency, got " . gettype($dependency) . ". " .
+                                "Please check your service configuration and ensure all constructor injection dependencies are properly defined."
+                        );
+                    }
+                }
                 return new $id(...$args);
             }
 
-            throw new ContainerException(
+            throw new InvalidServiceConfigurationException(
                 "Invalid service configuration for '{$id}': expected callable, string, or array, got " . gettype($config) . ". " .
                     "Please check your service configuration."
             );
@@ -62,9 +68,10 @@ class ServiceContainer implements ContainerInterface
         try {
             $class_exists = class_exists($id);
         } catch (Throwable $exception) {
-            throw new ContainerException(
-                "An error occurred while trying to load the service '{$id}': " . $exception->getMessage() . ". " .
-                    "Please check your service configuration and ensure the class '{$id}' exists and is autoloadable."
+            throw new ServiceInstantiationException(
+                "An error occurred while trying to load the service '{$id}': " . $exception->getMessage() . ". ",
+                0,
+                $exception
             );
         }
 
@@ -93,13 +100,12 @@ class ServiceContainer implements ContainerInterface
                 // Use default value if available
                 $params[] = $param->getDefaultValue();
             } else {
-                throw new ContainerException(
+                throw new ServiceInstantiationException(
                     "Unable to resolve the dependency '{$param->getName()}' for service '{$id}'. " .
                         "The parameter has no resolvable type hint, default value, or explicit configuration in the container."
                 );
             }
         }
-        $instance = $reflection->newInstanceArgs($params);
-        return $instance;
+        return $reflection->newInstanceArgs($params);
     }
 }
