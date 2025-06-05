@@ -21,7 +21,7 @@ Requires PHP 8.3 or above
     - [Advanced Example](#advanced-example)
 - [Configuration Options](#configuration-options)
     - [1. String or `::class` Syntax](#1-string-or-class-syntax)
-    - [2. Closure (Factory Function)](#2-closure-factory-function)
+    - [2. Callable (Factory Function)](#2-callable-factory-function)
     - [3. Array (Constructor Injection)](#3-array-constructor-injection)
 - [Learn](#learn)
 - [Attribution](#attribution)
@@ -121,9 +121,9 @@ Here’s the same example without using the `::class` syntax:
 ```
 This achieves the same result, but using strings directly can be less readable.
 
-### 2. Closure (Factory Function)
+### 2. Callable (Factory Function)
 
-Provides a custom factory function for creating the service. Use a closure to explicitly return the desired value.
+Use a callable (e.g Closure, Arrow Function) to explicitly return the desired value.
 
 ```php
 LoggerService::class => function() {
@@ -139,7 +139,7 @@ LoggerService::class => function() {
 Allows you to define constructor arguments for a class using an associative array. Each key corresponds to the name of a constructor parameter, while the value specifies how it should be resolved. You can also use positional arguments by omitting the keys.
 
 - Use a string or `::class` syntax to alias another implementation that will be resolved from the container.
-- Use a closure to assign a value directly.
+- Use a callable (e.g Closure, Arrow Function) to explicitly return the desired value.
 
 ```php
 DatabaseService::class => [
