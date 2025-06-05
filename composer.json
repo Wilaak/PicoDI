@@ -17,5 +17,16 @@
     },
     "require": {
         "psr/container": "^2.0"
+    },
+    "keywords": [
+        "dependency injection",
+        "container",
+        "php",
+        "psr-11"
+    ],
+    "homepage": "https://github.com/Wilaak/PicoDI",
+    "support": {
+        "issues": "https://github.com/Wilaak/PicoDI/issues",
+        "source": "https://github.com/Wilaak/PicoDI"
     }
 }
