@@ -1,6 +1,6 @@
 {
     "name": "wilaak/picodi",
-    "description": "The ridiculously simple dependency injection (DI) container for PHP.",
+    "description": "Ridiculously simple dependency injection (DI) container for PHP.",
     "type": "library",
     "license": "WTFPL",
     "authors": [

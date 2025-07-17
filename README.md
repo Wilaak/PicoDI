@@ -1,6 +1,6 @@
 # PicoDI 
 
-The ridiculously simple dependency injection (DI) container for PHP.
+Ridiculously simple dependency injection (DI) container for PHP.
 
 ### Overview
 
