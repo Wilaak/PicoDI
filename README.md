@@ -44,9 +44,9 @@ composer require wilaak/picodi
 
 Requires PHP 8.1 or above
 
-## Usage
+## Usage example
 
-Here's a basic usage example:
+Here's a basic usage example.
 
 ```php
 use Wilaak\PicoDI\ServiceContainer;
@@ -56,39 +56,27 @@ interface LoggerInterface {
 }
 
 class FileLogger implements LoggerInterface {
-    public function __construct(
-        private string $file
-    ) {}
-
+    public function __construct(private string $file) {}
     public function log(string $message): void {
         file_put_contents($this->file, $message . PHP_EOL, FILE_APPEND);
     }
 }
 
 class UserService {
-    public function __construct(
-        private LoggerInterface $logger
-    ) {}
-
+    public function __construct(private LoggerInterface $logger) {}
     public function createUser(string $username): void {
-        // ... user creation logic ...
         $this->logger->log("Created user: $username");
     }
 }
 
 $config = [
     LoggerInterface::class => FileLogger::class,
-    FileLogger::class => fn() => new FileLogger(
-        file: '/tmp/app.log'
-    ),
-    // No need to configure UserService: PicoDI autowires dependencies by type-hint!
+    FileLogger::class => fn() => new FileLogger('/tmp/app.log'),
 ];
 
 $container = new ServiceContainer($config);
 
-// Retrieve a UserService instance with LoggerInterface auto-injected
 $userService = $container->get(UserService::class);
-$userService->createUser('alice');
 ```
 
 ## Configuration
@@ -100,10 +88,8 @@ The configuration array specifies how the container resolves dependencies. The f
 Defines an alias for the class or interface specified in the key. You can use either the class name resolution operator or plain strings, but the `::class` syntax is preferred for readability and IDE support.
 
 ```php
-// Both examples below achieve the same result:
 $config = [
     LoggerInterface::class => FileLogger::class,
-    'LoggerInterface' => 'FileLogger',
 ];
 ```
 
