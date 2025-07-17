@@ -1,6 +1,6 @@
 {
     "name": "wilaak/picodi",
-    "description": "A stupidly simple PHP dependency injection container.",
+    "description": "The ridiculously simple dependency injection (DI) container for PHP.",
     "type": "library",
     "license": "WTFPL",
     "authors": [
@@ -22,11 +22,20 @@
         "dependency injection",
         "container",
         "php",
-        "psr-11"
+        "psr-11",
+        "di",
+        "service container",
+        "ioc",
+        "inversion of control",
+        "lightweight",
+        "simple"
     ],
     "homepage": "https://github.com/Wilaak/PicoDI",
     "support": {
         "issues": "https://github.com/Wilaak/PicoDI/issues",
         "source": "https://github.com/Wilaak/PicoDI"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1"
     }
 }
