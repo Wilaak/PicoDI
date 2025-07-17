@@ -2,9 +2,16 @@
 
 The ridiculously simple dependency injection (DI) container for PHP.
 
+### Overview
+
+- All services are singletons; each dependency is instantiated only once and shared (lazy-loading).
+- Extremely lightweight: just 86 lines of code.
+- Supports automatic constructor injection using type hints (autowiring).
+- Fully compatible with the PSR-11 container interface.
+
 ## How does it work?
 
-In any application, objects (called "services") often depend on other objects to do their job. Manually injecting these dependencies everywhere can be tiresome and error-prone, especially as your application grows.
+Ojects often depend on other objects to do their job. Manually injecting these dependencies everywhere can be tiresome and error-prone, especially when you need to use them in multiple places.
 
 A dependency injection container aims to help by acting as a "service directory": you configure each service once, and the container handles creating and wiring everything together automatically.
 
@@ -26,8 +33,6 @@ $config = [
 $container = new ServiceContainer($config);
 $userService = $container->get(UserService::class); // Logger is auto-injected!
 ```
-
-This approach keeps your code clean, centralizes configuration, and makes it easy to swap implementations or update dependencies in one place.
 
 ## Installation
 
