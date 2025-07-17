@@ -106,7 +106,6 @@ Use a callable (e.g anonymous functions) to explicitly return the desired value.
 ```php
 $config = [
     LoggerInterface::class => function(ServiceContainer $container) {
-        // You can use the container to resolve dependencies or configure the instance.
         $logger = new FileLogger(file: '/var/log/app.log');
         // Optionally, inject other services from the container if needed:
         // $dependency = $container->get(OtherService::class);
