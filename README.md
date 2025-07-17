@@ -71,12 +71,18 @@ class UserService {
 
 $config = [
     LoggerInterface::class => FileLogger::class,
-    FileLogger::class => fn() => new FileLogger('/tmp/app.log'),
+
+    FileLogger::class => function(ServiceContainer $container) {
+        // You can use $container->get to resolve other dependencies if needed
+        // For this example, we just instantiate FileLogger directly
+        return new FileLogger('/tmp/app.log');
+    }
 ];
 
 $container = new ServiceContainer($config);
 
 $userService = $container->get(UserService::class);
+$userService->createUser('alice');
 ```
 
 ## Configuration
@@ -101,9 +107,7 @@ Use a callable (e.g anonymous functions) to explicitly return the desired value.
 $config = [
     LoggerInterface::class => function(ServiceContainer $container) {
         // You can use the container to resolve dependencies or configure the instance.
-        $logger = new FileLogger(
-            file: '/var/log/app.log'
-        );
+        $logger = new FileLogger(file: '/var/log/app.log');
         // Optionally, inject other services from the container if needed:
         // $dependency = $container->get(OtherService::class);
         return $logger;
