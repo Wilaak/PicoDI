@@ -9,29 +9,51 @@ Ridiculously simple dependency injection (DI) container for PHP.
 - Supports automatic constructor injection using type hints (autowiring).
 - Fully compatible with the PSR-11 container interface.
 
-## How does it work?
+## What is a DI container?
 
-Ojects often depend on other objects to do their job. Manually injecting these dependencies everywhere can be tiresome and error-prone, especially when you need to use them in multiple places.
-
-A dependency injection container aims to help by acting as a "service directory": you configure each service once, and the container handles creating and wiring everything together automatically.
+A dependency injection container is a tool that automatically creates and manages the objects your application needs, wiring their dependencies together for you. It centralizes how services are configured and connected, making your code easier to maintain, test, and extend.
 
 **Without a container:**
 
 ```PHP
+// You must manually create and pass every dependency, everywhere you need them.
 $logger = new FileLogger('/tmp/app.log');
-$userService = new UserService($logger);
+$mailer = new Mailer($logger);
+
+$userService = new UserService($logger, $mailer);
+$orderService = new OrderService($logger, $mailer);
+
+// If you need these services in other places, you have to repeat this process.
+// If you want to swap the logger implementation, you must update every place it's used.
+
+// Adding a new dependency or changing the wiring means editing code in many places.
 ```
 
-**With PicoDI:**
+**With a container:**
 
 ```PHP
+// Configure how your objects should be instantiated.
 $config = [
     LoggerInterface::class => FileLogger::class,
-    FileLogger::class => fn() => new FileLogger('/tmp/app.log'),
+    FileLogger::class => function() { 
+        return new FileLogger(
+            file: '/tmp/app.log'
+        );
+    }
+    Mailer::class => function(ServiceContainer $container) {
+        return new Mailer(
+            logger: $container->get(LoggerInterface::class)
+        );
+    }
 ];
 
 $container = new ServiceContainer($config);
-$userService = $container->get(UserService::class); // Logger is auto-injected!
+
+// The container will automatically inspect the constructor and inject its dependencies.
+$userService = $container->get(UserService::class);
+$orderService = $container->get(OrderService::class);
+
+// If you want to swap the logger implementation, just change the config in one place!
 ```
 
 ## Installation
@@ -42,7 +64,7 @@ Install using composer:
 composer require wilaak/picodi
 ```
 
-Requires PHP 8.1 or above
+Requires PHP 8.0 or above
 
 ## Usage example
 
