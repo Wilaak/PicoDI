@@ -36,14 +36,10 @@ $orderService = new OrderService($logger, $mailer);
 $config = [
     LoggerInterface::class => FileLogger::class,
     FileLogger::class => function() { 
-        return new FileLogger(
-            file: '/tmp/app.log'
-        );
+        return new FileLogger('/tmp/app.log');
     }
     Mailer::class => function(ServiceContainer $container) {
-        return new Mailer(
-            logger: $container->get(LoggerInterface::class)
-        );
+        return new Mailer($container->get(LoggerInterface::class));
     }
 ];
 
